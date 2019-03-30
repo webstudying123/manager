@@ -13,6 +13,12 @@ Vue.filter('globalformattime',function(value,formattemplate){
   }
 })
 
+//全局axios的导入
+import axios from 'axios'
+Vue.prototype.$axios=axios
+axios.defaults.baseURL='http://localhost:8081'
+
+
 //引入全局的样式
 import './assets/base.scss'
 
