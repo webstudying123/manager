@@ -15,8 +15,28 @@
       </el-row>
     </el-header>
     <el-container class="my-body">
-      <el-aside class="my-aside" width="200px">Aside</el-aside>
-      <el-main class="my-main">Main</el-main>
+      <el-aside class="my-aside" width="200px">
+        <el-menu
+         router
+          default-active="2"
+          class="el-menu-vertical-demo"
+        >
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>导航一</span>
+            </template>
+             <el-menu-item index="users">
+                 <span class="el-icon-menu" index="users"></span>
+                 选项1
+                 </el-menu-item>
+          </el-submenu>
+
+        </el-menu>
+      </el-aside>
+      <el-main class="my-main">
+          <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -27,29 +47,29 @@ export default {};
 
 <style lang='scss'>
 .bigcontainer {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-    .my-header{
-        background-color: #b3c0d1;
-        height: 60px;
-        line-height: 60px;
-        h2 {
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  .my-header {
+    background-color: #b3c0d1;
+    height: 60px;
+    line-height: 60px;
+    h2 {
+      margin: 0;
+      padding: 0;
+      text-align: center;
     }
-    .my-body{
-        flex: 1;
-        .my-aside{
-            background-color: white;
-        }
-        .my-main {
-            background-color: #e9eef3;
-        }
+  }
+  .my-body {
+    flex: 1;
+    .my-aside {
+      background-color: white;
     }
+    .my-main {
+      background-color: #e9eef3;
+      padding-top: 0;
+    }
+  }
 }
 </style>
