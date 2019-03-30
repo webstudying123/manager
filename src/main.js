@@ -13,6 +13,9 @@ Vue.filter('globalformattime',function(value,formattemplate){
   }
 })
 
+//引入全局的样式
+import './assets/base.scss'
+
 //导入elmui
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
