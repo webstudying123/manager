@@ -43,9 +43,20 @@ export default {
     },
     methods: {
         submitform(formname){
-            this.$refs[formname].validate(valid=>{
+            this.$refs[formname].validate(async valid=>{
                 if(valid){
-                   this.$message('提交成功')
+                //    this.$message('提交成功')
+                   let res= await this.$axios.post('login',this.loginform);
+                   console.log(res);
+                   if(res.data.meta.status==400){
+                       this.$message(res.data.meta.msg);
+                   }else if(res.data.meta.status==200){
+                       this.$message(res.data.meta.msg);
+                       //储存数据
+                       window.sessionStorage.setItem('token',res.data.data.token);
+                       //跳转
+                       this.$router.push('/')
+                   }
                 }else {
                     this.$message('请按照规则填写')
                 }

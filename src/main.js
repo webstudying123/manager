@@ -16,7 +16,7 @@ Vue.filter('globalformattime',function(value,formattemplate){
 //全局axios的导入
 import axios from 'axios'
 Vue.prototype.$axios=axios
-axios.defaults.baseURL='http://localhost:8081'
+axios.defaults.baseURL='http://localhost:8888/api/private/v1/'
 
 
 //引入全局的样式

@@ -10,7 +10,7 @@
           <h2>后台管理系统</h2>
         </el-col>
         <el-col :span="1">
-          <el-button type="success" round>退出</el-button>
+          <el-button type="success" @click="loginout" round>退出</el-button>
         </el-col>
       </el-row>
     </el-header>
@@ -42,7 +42,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    loginout(){
+      window.sessionStorage.removeItem('token');
+      this.$router.push('/login');
+    }
+  },
+};
 </script>
 
 <style lang='scss'>
