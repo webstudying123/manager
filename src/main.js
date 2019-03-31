@@ -40,7 +40,12 @@ axios.interceptors.request.use(function (config) {
 });
 
 axios.interceptors.response.use(function (response) {
-  Vue.prototype.$message('处理成功了')
+ if( [200,201,204].indexOf(response.data.meta.status)!=-1){
+  Vue.prototype.$message.success(response.data.meta.msg)
+ }else {
+  Vue.prototype.$message.warning(response.data.meta.msg)
+ }
+  
   return response;
 }, function (error) {
   return Promise.reject(error);
