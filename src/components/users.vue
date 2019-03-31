@@ -9,8 +9,8 @@
     <!-- 输入框 -->
     <div class="inputbox">
       <el-col :span="6">
-        <el-input placeholder="请输入内容" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input placeholder="请输入内容" v-model="params.query" @keyup.native.enter='search' class="input-with-select">
+          <el-button slot="append" @click="search" icon="el-icon-search"></el-button>
         </el-input>
       </el-col>
       <el-col :span="6">
@@ -18,54 +18,93 @@
       </el-col>
     </div>
     <!-- 表格 -->
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="date" label="日期" width="180"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
+    <el-table :data="tablelist" style="width: 100%" border>
+      <el-table-column type="index"></el-table-column>
+      <el-table-column prop="username" label="姓名" width="180"></el-table-column>
+      <el-table-column prop="email" label="邮箱" width="180"></el-table-column>
+      <el-table-column prop="mobile" label="电话"></el-table-column>
+      <el-table-column prop="mg_state" label="用户状态">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column prop="address" label="操作">
+        <template slot-scope="scope">
+          <el-button
+            plain
+            type="primary"
+            size="mini"
+            @click="handleEdit(scope.$index, scope.row)"
+            icon="el-icon-edit"
+          ></el-button>
+          <el-button
+            plain
+            type="danger"
+            size="mini"
+            @click="handleEdit(scope.$index, scope.row)"
+            icon="el-icon-delete"
+          ></el-button>
+          <el-button plain type="warning" size="mini" icon="el-icon-check"></el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :page-sizes="[5, 10, 15, 20]"
+      :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
-    </el-pagination>
+      :total="total"
+    ></el-pagination>
   </div>
 </template>
 
 <script>
 export default {
-     data() {
-        return {
-          tableData: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }]
-        }
-      }
+  data() {
+    return {
+      //参数
+      params: {
+        query: "",
+        pagenum: 1,
+        pagesize: 10
+      },
+      //表格数据
+      tablelist: [],
+      //总的数据条数
+      total: 0
+    };
+  },
+  methods: {
+    //操作的相关处理
+    handleEdit(index, row){
+      console.log(index);
+      console.log(row);
+    },
+    async search() {
+      let res = await this.$axios.get("users", {
+        params: this.params
+        // headers: {
+        //   Authorization: window.sessionStorage.getItem("token")
+        // }
+      });
+      console.log(res);
+      this.total = res.data.data.total;
+      this.tablelist = res.data.data.users;
+    }
+  },
+   created() {
+     this.search();
+   }
 };
 </script>
 
 <style lang='scss'>
 .outbox {
-    .navbox {
-        height: 45px;
-        background-color: #d3dce6;
-        line-height: 45px;
-        padding-left: 10px;
-    }
+  .navbox {
+    height: 45px;
+    background-color: #d3dce6;
+    line-height: 45px;
+    padding-left: 10px;
+  }
 }
 </style>

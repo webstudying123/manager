@@ -28,6 +28,26 @@ import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
 
 
+
+//设置拦截器
+axios.interceptors.request.use(function (config) {
+  // console.log('开始了');
+  // console.log(config);
+  config.headers.Authorization=window.sessionStorage.getItem('token');
+  return config;
+}, function (error) {
+  return Promise.reject(error);
+});
+
+axios.interceptors.response.use(function (response) {
+  Vue.prototype.$message('处理成功了')
+  return response;
+}, function (error) {
+  return Promise.reject(error);
+});
+
+
+
 //路由的导入
 import router from './router.js'
 
