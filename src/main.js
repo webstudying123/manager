@@ -19,6 +19,11 @@ Vue.prototype.$axios=axios
 axios.defaults.baseURL='http://localhost:8888/api/private/v1/'
 
 
+//面包屑导航
+import bread from './components/bread.vue'
+Vue.component('mybread',bread)
+
+
 //引入全局的样式
 import './assets/base.scss'
 

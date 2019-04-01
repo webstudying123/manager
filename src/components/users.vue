@@ -1,11 +1,7 @@
 <template>
   <div class="outbox">
     <!-- 导航 -->
-    <el-breadcrumb class="navbox" separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+      <mybread twotitle='用户管理也' threetitle='用户列表'></mybread>
     <!-- 输入框 -->
     <div class="inputbox">
       <el-col :span="6">
@@ -95,7 +91,7 @@
       </div>
     </el-dialog>
     <!-- 编辑用户 -->
-    <el-dialog title="添加用户" :visible.sync="editorFormVisible">
+    <el-dialog title="编辑用户" :visible.sync="editorFormVisible">
       <el-form :model="editorruleform" :rules="rules" ref="editorruleform">
         <el-form-item label="用户名" prop="username" label-width="200px">
           <el-input v-model="editorruleform.username" disabled auto-complete="off"></el-input>
@@ -113,7 +109,7 @@
       </div>
     </el-dialog>
     <!-- 用户角色管理 -->
-    <el-dialog title="添加用户" :visible.sync="roleVisible">
+    <el-dialog title="用户角色" :visible.sync="roleVisible">
       <el-form ref="roleform">
         <el-form-item label="当前用户" label-width="200px">{{rolelist.username}}</el-form-item>
         <el-form-item label="请选择用户角色" label-width="200px">
@@ -291,9 +287,9 @@ export default {
       console.log(res);
       this.roleselectlist=res.data.data;
     },
-    //点击确定,完成角色处理
+    //点击确定,完成角色处理,分配角色
     async finishrole(formName){
-      let res=await this.$axios.put(`roles/${this.rolelist.id}`,{
+      let res=await this.$axios.put(`users/${this.rolelist.id}/role`,{
         rid:this.rolelist.role_name
       })
       console.log(res);
@@ -318,13 +314,5 @@ export default {
 };
 </script>
 
-<style lang='scss'>
-.outbox {
-  .navbox {
-    height: 45px;
-    background-color: #d3dce6;
-    line-height: 45px;
-    padding-left: 10px;
-  }
-}
+<style>
 </style>
