@@ -18,17 +18,18 @@
       <el-aside class="my-aside" width="200px">
         <el-menu
          router
-          default-active="2"
+          default-active="users"
           class="el-menu-vertical-demo"
         >
-          <el-submenu index="1">
+        <!--  default-active="users" 是默认展开的路径 -->
+          <el-submenu :index="item.id+''" v-for="item in menuslist">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <span>{{item.authName}}</span>
             </template>
-             <el-menu-item index="users">
-                 <span class="el-icon-menu" index="users"></span>
-                 选项1
+             <el-menu-item :index="it.path" v-for="it in item.children">
+                 <span class="el-icon-menu"></span>
+                {{it.authName}}
                  </el-menu-item>
           </el-submenu>
 
@@ -43,6 +44,11 @@
 
 <script>
 export default {
+  data(){
+    return {
+      menuslist:[]
+    }
+  },
   methods: {
     loginout(){
       window.sessionStorage.removeItem('token');
@@ -57,6 +63,11 @@ export default {
       this.$router.push('/login')
     }
     
+  },
+  async created() {
+    let res=await this.$axios.get('menus');
+    console.log(res);
+    this.menuslist=res.data.data;
   },
 };
 </script>

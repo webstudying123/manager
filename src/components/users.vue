@@ -54,7 +54,13 @@
             @click="delet(scope.row)"
             icon="el-icon-delete"
           ></el-button>
-          <el-button plain type="warning" size="mini" icon="el-icon-check"></el-button>
+          <el-button
+            plain
+            type="warning"
+            @click="roleopen(scope.row)"
+            size="mini"
+            icon="el-icon-check"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,6 +68,8 @@
     <el-pagination
       :page-sizes="[5, 10, 15, 20]"
       :page-size="10"
+       @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     ></el-pagination>
@@ -104,11 +112,32 @@
         <el-button type="primary" @click="editorform('editorruleform')">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 用户角色管理 -->
+    <el-dialog title="添加用户" :visible.sync="roleVisible">
+      <el-form ref="roleform">
+        <el-form-item label="当前用户" label-width="200px">{{rolelist.username}}</el-form-item>
+        <el-form-item label="请选择用户角色" label-width="200px">
+          <el-select v-model="rolelist.role_name" placeholder="请选择">
+            <el-option
+              v-for="item in roleselectlist"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="roleVisible = false">取 消</el-button>
+        <el-button type="primary" @click="finishrole('roleform')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
+  name:'user',
   data() {
     return {
       //参数
@@ -123,6 +152,12 @@ export default {
       total: 0,
       //弹框是否显示:
       dialogFormVisible: false,
+      //角色弹框显示
+      roleVisible: false,
+      //用户角色列表
+      rolelist: [],
+      //角色的下拉列表
+      roleselectlist:[],
       ruleform: {
         username: "abcdefgrh",
         password: "123",
@@ -132,11 +167,11 @@ export default {
       rules: {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 6, max: 10, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { min: 6, max: 10, message: "长度在 6 到 10 个字符", trigger: "blur" }
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, max: 10, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { min: 6, max: 10, message: "长度在 6到 10 个字符", trigger: "blur" }
         ]
       },
       //编辑相关数据
@@ -151,7 +186,8 @@ export default {
   methods: {
     //编辑操作的相关处理
     handleEdit(index, row) {
-      // console.log(index);
+      console.log(index);
+      console.log(row);
       console.log(row);
       this.editorFormVisible = true;
       this.editorruleform = row;
@@ -229,7 +265,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(async ()=> {
+        .then(async () => {
           let res = await this.$axios.delete(`users/${row.id}`);
           if (res.data.meta.status == 200) {
             this.$message("删除成功");
@@ -244,7 +280,37 @@ export default {
             message: "已取消删除"
           });
         });
-    }
+    },
+    //角色管理
+    async roleopen(row) {
+      this.roleVisible = true;
+      this.rolelist = row;
+
+      // console.log(row);
+      let res=await this.$axios.get('roles')
+      console.log(res);
+      this.roleselectlist=res.data.data;
+    },
+    //点击确定,完成角色处理
+    async finishrole(formName){
+      let res=await this.$axios.put(`roles/${this.rolelist.id}`,{
+        rid:this.rolelist.role_name
+      })
+      console.log(res);
+      if(res.data.meta.status==200){
+        this.roleVisible=false;
+        this.search();
+      }
+    },
+    //分页的处理
+     handleSizeChange(size){
+       this.params.pagesize=size;
+       this.search();
+     },
+     handleCurrentChange(current){
+      this.params.pagenum=current;
+       this.search();
+     }
   },
   created() {
     this.search();
