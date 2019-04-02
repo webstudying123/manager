@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import echarts from'echarts'
 export default {
   name: "reports",
   mounted() {
