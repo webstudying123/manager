@@ -15,7 +15,7 @@ export default {
     return {
      option: {
       title: {
-        text: "堆叠区域图"
+        text: "用户来源"
       },
       tooltip: {
         trigger: "axis",
@@ -107,6 +107,8 @@ export default {
      for (let key in res.data.data) {
              this.option[key]=res.data.data[key] 
      }
+     //让其x轴向上不留白
+     this.option.xAxis[0].boundaryGap=false;
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(this.option);
   }

@@ -13,11 +13,9 @@ Vue.filter('globalformattime',function(value,formattemplate){
   }
 })
 
-//全局axios的导入
-import axios from 'axios'
-Vue.prototype.$axios=axios
-axios.defaults.baseURL='http://localhost:8888/api/private/v1/'
-
+//导入自己封装的axios插件
+import myaxios from './myaxios.js'
+Vue.use(myaxios)
 
 //面包屑导航
 import bread from './components/bread.vue'
@@ -34,27 +32,6 @@ Vue.use(ElementUI)
 
 
 
-//设置拦截器
-axios.interceptors.request.use(function (config) {
-  // console.log('开始了');
-  // console.log(config);
-  config.headers.Authorization=window.sessionStorage.getItem('token');
-  return config;
-}, function (error) {
-  return Promise.reject(error);
-});
-
-axios.interceptors.response.use(function (response) {
- if( [200,201,204].indexOf(response.data.meta.status)!=-1){
-  Vue.prototype.$message.success(response.data.meta.msg)
- }else {
-  Vue.prototype.$message.warning(response.data.meta.msg)
- }
-  
-  return response;
-}, function (error) {
-  return Promise.reject(error);
-});
 
 
 

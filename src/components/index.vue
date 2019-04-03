@@ -56,12 +56,12 @@ export default {
     }
   },
   beforeCreate() {
-    if(window.sessionStorage.getItem('token')){
+    // if(window.sessionStorage.getItem('token')){
 
-    }else {
-      this.$message('请先登录');
-      this.$router.push('/login')
-    }
+    // }else {
+    //   this.$message('请先登录');
+    //   this.$router.push('/login')
+    // }
     
   },
   async created() {
