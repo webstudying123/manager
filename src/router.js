@@ -12,8 +12,10 @@ import categories from "./components/categories.vue";
 import orders from "./components/orders.vue";
 import params from "./components/params.vue";
 import reports from "./components/reports.vue";
+import error from "./components/error.vue";
 
 let routes = [
+  {path:'/error',component:error},
   { path: "/login", component: login ,meta:{
     nologin:true
   }},
@@ -66,7 +68,11 @@ let router = new VueRouter({
 
 //导航守卫
 router.beforeEach((to,from,next)=>{
-    console.log(to);
+    if(to.matched.length===0){
+      Vue.prototype.$message('输入地址有误')
+      next('/error')
+    }
+    // console.log(to);
     // if(to.path=='/login'){
       if(to.meta.nologin==true){
       next()

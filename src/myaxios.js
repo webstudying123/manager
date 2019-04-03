@@ -1,6 +1,7 @@
 
 import axios from 'axios'
 import Vue from 'vue'
+import router from './router';
 export default {
    install(){
        //全局axios的导入
@@ -19,6 +20,21 @@ axios.interceptors.request.use(function (config) {
   });
   
   axios.interceptors.response.use(function (response) {
+    //设置404错误页面
+    // if(response)
+
+
+  //  console.log(response);
+  if(response.data.meta.msg==='无效token'&&response.data.meta.status==400){
+    Vue.prototype.$message('伪造,请先登录')
+    window.sessionStorage.removeItem('token')
+    //上面这个无法实现,记得找不能实现的原因
+    // Vue.prototype.$router.push('/login')
+    router.push('/login')
+    return
+  }
+
+
    if( [200,201,204].indexOf(response.data.meta.status)!=-1){
     Vue.prototype.$message.success(response.data.meta.msg)
    }else {
