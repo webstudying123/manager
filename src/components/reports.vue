@@ -8,14 +8,12 @@
 </template>
 
 <script>
-import echarts from'echarts'
+import echarts from 'echarts'
 export default {
   name: "reports",
-  mounted() {
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById("main"));
-    // 指定图表的配置项和数据
-    var option = {
+  data(){
+    return {
+     option: {
       title: {
         text: "堆叠区域图"
       },
@@ -97,10 +95,20 @@ export default {
           data: [820, 932, 901, 934, 1290, 1330, 1320]
         }
       ]
-    };
-
+    }
+    }
+  },
+  async mounted() {
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById("main"));
+    // 指定图表的配置项和数据
+     let res =await this.$axios.get('reports/type/1')
+     console.log(res);
+     for (let key in res.data.data) {
+             this.option[key]=res.data.data[key] 
+     }
     // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
+    myChart.setOption(this.option);
   }
 };
 </script>
