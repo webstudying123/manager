@@ -20,10 +20,7 @@ axios.interceptors.request.use(function (config) {
   });
   
   axios.interceptors.response.use(function (response) {
-    //设置404错误页面
-    // if(response)
-
-
+    
   //  console.log(response);
   if(response.data.meta.msg==='无效token'&&response.data.meta.status==400){
     Vue.prototype.$message('伪造,请先登录')

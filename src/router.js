@@ -68,6 +68,8 @@ let router = new VueRouter({
 
 //导航守卫
 router.beforeEach((to,from,next)=>{
+    //设置404错误页面
+    // if(response)
     if(to.matched.length===0){
       Vue.prototype.$message('输入地址有误')
       next('/error')
