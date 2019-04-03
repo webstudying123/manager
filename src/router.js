@@ -14,7 +14,9 @@ import params from "./components/params.vue";
 import reports from "./components/reports.vue";
 
 let routes = [
-  { path: "/login", component: login },
+  { path: "/login", component: login ,meta:{
+    nologin:true
+  }},
   {
     path: "/",
     component: index,
@@ -64,8 +66,9 @@ let router = new VueRouter({
 
 //导航守卫
 router.beforeEach((to,from,next)=>{
-    // console.log(to);
-    if(to.path=='/login'){
+    console.log(to);
+    // if(to.path=='/login'){
+      if(to.meta.nologin==true){
       next()
     }else {
       if(window.sessionStorage.getItem('token')){
