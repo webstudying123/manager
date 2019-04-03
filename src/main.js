@@ -3,15 +3,15 @@ import App from './App.vue'
 
 Vue.config.productionTip = false
 
-//定义全局过滤器
-import moment from 'moment'
-Vue.filter('globalformattime',function(value,formattemplate){
-  if(formattemplate){
-    return moment(value).format(formattemplate)
-  }else {
-    return moment(value).format('YYYY-MM-DD')
-  }
-})
+// //定义全局过滤器
+// import moment from 'moment'
+// Vue.filter('globalformattime',function(value,formattemplate){
+//   if(formattemplate){
+//     return moment(value).format(formattemplate)
+//   }else {
+//     return moment(value).format('YYYY-MM-DD')
+//   }
+// })
 
 //导入自己封装的axios插件
 import myaxios from './myaxios.js'
@@ -30,7 +30,15 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
 
-
+//过滤器的使用
+import moment from 'moment'
+Vue.filter('mytime', (value,timeformat)=>{
+  if(timeformat){
+    return moment(value).format(timeformat)
+  }else {
+    return moment(value).format('YYYY-MM-DD')
+  }
+})
 
 
 
