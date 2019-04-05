@@ -23,7 +23,7 @@
             size="mini"
             icon="el-icon-edit"
           ></el-button>
-          <el-button plain type="danger" size="mini" icon="el-icon-delete"></el-button>
+          <el-button plain type="danger" size="mini" @click="delefun(scope.row)" icon="el-icon-delete"></el-button>
           <el-button
             plain
             type="warning"
@@ -75,6 +75,7 @@
         :data="treelist"
         show-checkbox
         node-key="id"
+        ref='tree'
         default-expand-all
         :default-checked-keys="defaultcheckedkey"
         :props="defaultProps"
@@ -82,7 +83,7 @@
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="treeVisible = false">取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button type="primary" @click="submittree">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -108,6 +109,8 @@ export default {
       },
       //树形结构是否显示
       treeVisible: false,
+      //展开时候的树形结构的相关信息
+      treerole:{},
       roleslist: [],
       addVisible: false,
       addform: {
@@ -177,7 +180,29 @@ export default {
         }
       });
     },
+    //删除
+    delefun(row){
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          let res =await this.$axios.delete(`roles/${row.id}`)
+          console.log(res);
+          if(res.data.meta.status==200){
+            this.$message(res.data.meta.msg)
+            this.getfun()
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
+    //打开权限管理窗口
     async treeopen(row) {
+      this.treerole=row
       this.treeVisible = true;
       let res = await this.$axios.get("rights/tree");
       console.log(res);
@@ -196,6 +221,23 @@ export default {
       getcheckedkey(row);
       console.log(defaultcheckedkeys);
       this.defaultcheckedkey = defaultcheckedkeys;
+    },
+    //操作权限管理
+    async submittree(){
+       console.log(this.$refs.tree.getCheckedKeys());
+       let rids=this.$refs.tree.getCheckedKeys().join(',')
+      //  console.log(rids);
+       let res=await this.$axios.post(`roles/${this.treerole.id}/rights`,{
+         rids
+       })
+       console.log(res);
+       if(res.data.meta.status==200){
+         this. getfun()
+         this.treeVisible=false
+         //c重新获取左侧的列表数据
+          let newres=await this.$axios.get('menus');
+          this.$store.commit('changes',newres.data.data)
+       }
     }
   },
   created() {

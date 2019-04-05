@@ -41,10 +41,15 @@ Vue.filter('mytime', (value,timeformat)=>{
 })
 
 
+
+
 //路由的导入
 import router from './router.js'
+//导入数据集中管理文件
+import store from './store.js'
 
 new Vue({
   render: h => h(App),
-  router
+  router,
+  store
 }).$mount('#app')

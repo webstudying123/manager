@@ -16,6 +16,7 @@ import error from "./components/error.vue";
 
 let routes = [
   {path:'/error',component:error},
+  {path:'/',redirect:'/users'},
   { path: "/login", component: login ,meta:{
     nologin:true
   }},

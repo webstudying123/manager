@@ -22,7 +22,7 @@
           class="el-menu-vertical-demo"
         >
         <!--  default-active="users" 是默认展开的路径 -->
-          <el-submenu :index="item.id+''" v-for="item in menuslist">
+          <el-submenu :index="item.id+''" v-for="item in $store.state.menuslist">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>{{item.authName}}</span>
@@ -67,7 +67,8 @@ export default {
   async created() {
     let res=await this.$axios.get('menus');
     console.log(res);
-    this.menuslist=res.data.data;
+    // this.menuslist=res.data.data;
+    this.$store.commit('changes',res.data.data)
   },
 };
 </script>
