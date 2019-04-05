@@ -41,8 +41,6 @@ Vue.filter('mytime', (value,timeformat)=>{
 })
 
 
-
-
 //路由的导入
 import router from './router.js'
 

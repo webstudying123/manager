@@ -68,6 +68,8 @@ let router = new VueRouter({
 
 //导航守卫
 router.beforeEach((to,from,next)=>{
+  // console.log(to);
+  // console.log(from);
     //设置404错误页面
     // if(response)
     if(to.matched.length===0){
