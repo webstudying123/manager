@@ -10,6 +10,27 @@
     </div>
     <!-- 表格 -->
     <el-table :data="roleslist" style="width: 100%" border>
+       <el-table-column type="expand">
+      <template slot-scope="props">
+         <el-row class="outrow" v-for="level1 in props.row.children">
+           <el-col :span='6'>
+             <el-tag  :key="level1.id" closable type="primary">{{level1.authName}}</el-tag>
+           </el-col>
+            <el-col :span='18'>
+              <el-row v-for="level2 in level1.children">
+                <el-col :span="8">
+                   <el-tag  :key="level2.id" closable type="primary">{{level2.authName}}</el-tag>
+                </el-col>
+                <el-col :span="16">
+                   <el-tag class="innerrow" v-for="level3 in level2.children" :key="level3.id" closable type="primary">{{level3.authName}}</el-tag>
+                </el-col>
+              </el-row>
+            </el-col>
+         </el-row>
+      </template>
+    </el-table-column>
+  
+      <!-- <el-tag v-for="tag in tags" :key="tag.name" closable :type="tag.type">{{tag.name}}</el-tag> -->
       <el-table-column type="index"></el-table-column>
       <el-table-column prop="roleName" label="角色名称" width="180"></el-table-column>
       <el-table-column prop="roleDesc" label="角色描述" width="180"></el-table-column>
@@ -23,7 +44,13 @@
             size="mini"
             icon="el-icon-edit"
           ></el-button>
-          <el-button plain type="danger" size="mini" @click="delefun(scope.row)" icon="el-icon-delete"></el-button>
+          <el-button
+            plain
+            type="danger"
+            size="mini"
+            @click="delefun(scope.row)"
+            icon="el-icon-delete"
+          ></el-button>
           <el-button
             plain
             type="warning"
@@ -75,7 +102,7 @@
         :data="treelist"
         show-checkbox
         node-key="id"
-        ref='tree'
+        ref="tree"
         default-expand-all
         :default-checked-keys="defaultcheckedkey"
         :props="defaultProps"
@@ -110,7 +137,7 @@ export default {
       //树形结构是否显示
       treeVisible: false,
       //展开时候的树形结构的相关信息
-      treerole:{},
+      treerole: {},
       roleslist: [],
       addVisible: false,
       addform: {
@@ -155,24 +182,27 @@ export default {
       });
     },
     //编辑展示
-    async editrole(row){
-       this.editVisible=true
-       let res=await this.$axios.get(`roles/${row.id}`)
-       console.log(res);
-       this.editform.id=res.data.data.roleId
-       this.editform.roleName=res.data.data.roleName
-       this.editform.roleDesc=res.data.data.roleDesc
+    async editrole(row) {
+      this.editVisible = true;
+      let res = await this.$axios.get(`roles/${row.id}`);
+      console.log(res);
+      this.editform.id = res.data.data.roleId;
+      this.editform.roleName = res.data.data.roleName;
+      this.editform.roleDesc = res.data.data.roleDesc;
     },
-     //编辑保存
+    //编辑保存
     editfun(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          let res = await this.$axios.put(`roles/${this.editform.id}`, this.editform);
+          let res = await this.$axios.put(
+            `roles/${this.editform.id}`,
+            this.editform
+          );
           console.log(res);
           if (res.data.meta.status == 200) {
             this.$message("res.data.meta.msg");
             this.getfun();
-            this.editVisible =false
+            this.editVisible = false;
           }
         } else {
           console.log("error submit!!");
@@ -181,28 +211,30 @@ export default {
       });
     },
     //删除
-    delefun(row){
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          let res =await this.$axios.delete(`roles/${row.id}`)
+    delefun(row) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          let res = await this.$axios.delete(`roles/${row.id}`);
           console.log(res);
-          if(res.data.meta.status==200){
-            this.$message(res.data.meta.msg)
-            this.getfun()
+          if (res.data.meta.status == 200) {
+            this.$message(res.data.meta.msg);
+            this.getfun();
           }
-        }).catch(() => {
+        })
+        .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
+            type: "info",
+            message: "已取消删除"
+          });
         });
     },
     //打开权限管理窗口
     async treeopen(row) {
-      this.treerole=row
+      this.treerole = row;
       this.treeVisible = true;
       let res = await this.$axios.get("rights/tree");
       console.log(res);
@@ -223,21 +255,21 @@ export default {
       this.defaultcheckedkey = defaultcheckedkeys;
     },
     //操作权限管理
-    async submittree(){
-       console.log(this.$refs.tree.getCheckedKeys());
-       let rids=this.$refs.tree.getCheckedKeys().join(',')
+    async submittree() {
+      console.log(this.$refs.tree.getCheckedKeys());
+      let rids = this.$refs.tree.getCheckedKeys().join(",");
       //  console.log(rids);
-       let res=await this.$axios.post(`roles/${this.treerole.id}/rights`,{
-         rids
-       })
-       console.log(res);
-       if(res.data.meta.status==200){
-         this. getfun()
-         this.treeVisible=false
-         //c重新获取左侧的列表数据
-          let newres=await this.$axios.get('menus');
-          this.$store.commit('changes',newres.data.data)
-       }
+      let res = await this.$axios.post(`roles/${this.treerole.id}/rights`, {
+        rids
+      });
+      console.log(res);
+      if (res.data.meta.status == 200) {
+        this.getfun();
+        this.treeVisible = false;
+        //c重新获取左侧的列表数据
+        let newres = await this.$axios.get("menus");
+        this.$store.commit("changes", newres.data.data);
+      }
     }
   },
   created() {
@@ -246,5 +278,12 @@ export default {
 };
 </script>
 
-<style>
+<style lang='scss'>
+    .outrow {
+      margin-bottom: 10px;
+    }
+    .innerrow {
+      margin-bottom: 5px;
+      margin-right: 5px;
+    }
 </style>
