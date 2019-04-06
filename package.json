@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "echarts": "^4.2.1",
-    "element-ui": "<2.6.0",
+    "element-ui": "^2.7.2",
     "moment": "^2.24.0",
     "v-distpicker": "^1.2.0",
     "vue": "^2.6.6",
